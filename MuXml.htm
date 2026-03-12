@@ -23,13 +23,12 @@
         #btn-minus { left: 10px; font-size: 24px; font-weight: bold; }
         #btn-play { left: 65px; font-size: 20px; color: #27ae60; }
         
-        /* Tempo Display styling */
         .tempo-display { 
             left: 120px; 
             padding: 0 15px; 
             font-size: 14px; 
             font-weight: bold;
-            pointer-events: none; /* purely informational */
+            pointer-events: none;
         }
 
         #btn-refresh { right: 65px; width: 44px; padding: 8px; cursor: pointer; }
@@ -55,6 +54,7 @@
     let currentZoom = 1.0;
     let isPlaying = false;
     let playbackInterval;
+    let detectedBPM = 120; // Default fallback
 
     function getFileNameFromQuery() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -63,6 +63,17 @@
 
     const fileName = getFileNameFromQuery();
     const xmlPath = fileName ? `${fileName}/${fileName}.xml` : null;
+
+    // SCRAPER: Manually extracts tempo from the raw XML string
+    function extractTempo(xmlString) {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+        const soundTag = xmlDoc.querySelector('sound[tempo]');
+        if (soundTag) {
+            return parseInt(soundTag.getAttribute('tempo'));
+        }
+        return 120;
+    }
 
     function initOSMD() {
         osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("score-container", {
@@ -97,9 +108,7 @@
     }
 
     function startPlayback() {
-        // Logic to find BPM from the score
-        const bpm = osmd.Sheet.BPM || 120;
-        const msPerBeat = (60 / bpm) * 1000;
+        const msPerBeat = (60 / detectedBPM) * 1000;
 
         playbackInterval = setInterval(() => {
             osmd.cursor.next();
@@ -121,13 +130,14 @@
         const cachedXML = localStorage.getItem(xmlPath);
         
         const processData = (data) => {
+            // Scrape the tempo before loading into OSMD
+            detectedBPM = extractTempo(data);
+            document.getElementById('tempo-val').innerText = `BPM: ${detectedBPM}`;
+
             osmd.load(data).then(() => {
                 osmd.zoom = currentZoom;
                 osmd.render();
                 osmd.cursor.show();
-                // Update tempo display from the loaded score
-                const tempo = Math.round(osmd.Sheet.BPM) || 120;
-                document.getElementById('tempo-val').innerText = `BPM: ${tempo}`;
             });
         };
 
