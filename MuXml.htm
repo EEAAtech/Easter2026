@@ -4,53 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusicXML Horizontal Viewer</title>
-    <script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@latest/build/opensheetmusicdisplay.min.js"></script>
+    <script src="https://unpkg.com/opensheetmusicdisplay@1.6.1/dist/opensheetmusicdisplay.min.js"></script>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: white;
-            overflow: hidden;
-            font-family: sans-serif;
-        }
+        body { margin: 0; padding: 0; background-color: white; overflow: hidden; font-family: sans-serif; }
         #score-container {
-            width: 100vw;
-            height: 100vh;
-            overflow-x: auto;
-            overflow-y: hidden;
-            white-space: nowrap;
-            -webkit-overflow-scrolling: touch;
+            width: 100vw; height: 100vh;
+            overflow-x: auto; overflow-y: hidden;
+            white-space: nowrap; -webkit-overflow-scrolling: touch;
         }
-        /* Floating Semi-Transparent Buttons */
-        .zoom-btn {
-            position: fixed;
-            top: 10px;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: 1px solid rgba(0,0,0,0.1);
-            background: rgba(255, 255, 255, 0.5); /* Semi-transparent white */
-            color: #333;
-            font-size: 24px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 1000;
-            user-select: none;
-            backdrop-filter: blur(4px); /* Modern frosted glass effect */
+        .zoom-btn, .refresh-btn {
+            position: fixed; top: 10px; width: 44px; height: 44px;
+            border-radius: 50%; border: 1px solid rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.5); color: #333;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 1000; backdrop-filter: blur(4px);
         }
-        .zoom-btn:active {
-            background: rgba(200, 200, 200, 0.8);
+        #btn-minus { left: 10px; font-size: 24px; font-weight: bold; }
+        #btn-plus { right: 10px; font-size: 24px; font-weight: bold; }
+        #btn-refresh { 
+            right: 65px; /* Positioned next to the Plus button */
+            padding: 8px; 
         }
-        #btn-minus { left: 10px; }
-        #btn-plus { right: 10px; }
+        .refresh-btn svg { width: 24px; height: 24px; fill: #371a94; }
     </style>
 </head>
 <body>
 
     <div id="btn-minus" class="zoom-btn" onclick="changeZoom(-0.1)">−</div>
+    <div id="btn-refresh" class="refresh-btn" onclick="refreshMusic()">
+        <svg viewBox="0 0 24 24"><path d="M16.3788 6.20698C15.1885 5.25459 13.7434 4.5 12 4.5C7.85787 4.5 4.5 7.85786 4.5 12C4.5 16.1421 7.85787 19.5 12 19.5C15.2549 19.5 18.028 17.4254 19.0646 14.5256C19.2505 14.0055 19.775 13.6568 20.3153 13.7713L21.2935 13.9787C21.8338 14.0932 22.1836 14.6262 22.0179 15.1531C20.6787 19.4112 16.7016 22.5 12 22.5C6.20101 22.5 1.5 17.799 1.5 12C1.5 6.20101 6.20101 1.5 12 1.5C14.7835 1.5 16.9516 2.76847 18.5112 4.0746L20.2929 2.29289C20.5789 2.00689 21.009 1.92134 21.3827 2.07612C21.7564 2.2309 22 2.59554 22 3V8.5C22 9.05228 21.5523 9.5 21 9.5H15.5C15.0956 9.5 14.7309 9.25636 14.5761 8.88268C14.4214 8.50901 14.5069 8.07889 14.7929 7.79289L16.3788 6.20698Z"/></svg>
+    </div>
     <div id="btn-plus" class="zoom-btn" onclick="changeZoom(0.1)">+</div>
 
     <div id="score-container"></div>
@@ -72,31 +55,49 @@
     }
 
     const fileName = getFileNameFromQuery();
-    const container = document.getElementById('score-container');
+    const xmlPath = fileName ? `${fileName}/${fileName}.xml` : null;
+
+    function loadMusic(forceRefresh = false) {
+        if (!xmlPath) return;
+
+        const cachedXML = localStorage.getItem(xmlPath);
+        
+        // If we have cache and aren't forcing a refresh, load from storage
+        if (cachedXML && !forceRefresh) {
+            osmd.load(cachedXML).then(() => {
+                osmd.zoom = currentZoom;
+                osmd.render();
+            });
+        } else {
+            // Fetch with cache-busting timestamp
+            const fetchUrl = xmlPath + '?nocache=' + new Date().getTime();
+            fetch(fetchUrl, { cache: 'no-store' })
+                .then(response => response.text())
+                .then(data => {
+                    localStorage.setItem(xmlPath, data);
+                    return osmd.load(data);
+                })
+                .then(() => {
+                    osmd.zoom = currentZoom;
+                    osmd.render();
+                })
+                .catch(err => alert("Error updating music: " + err.message));
+        }
+    }
+
+    function refreshMusic() {
+        if (confirm("Download latest version of this sheet?")) {
+            loadMusic(true);
+        }
+    }
 
     if (fileName) {
-        // Construct path: folder/file.xml 
-        // Note: change to .musicxml below if Logic Pro exports with that extension
-        const xmlUrl = `${fileName}/${fileName}.xml`;
-
         osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("score-container", {
-            autoResize: true,
-            backend: "canvas",
-            drawingParameters: "compacttight",
+            autoResize: true, backend: "canvas", drawingParameters: "compacttight",
             renderSingleHorizontalStaffline: true
         });
-
-        osmd.load(xmlUrl).then(() => {
-            osmd.zoom = currentZoom;
-            osmd.render();
-        }).catch(err => {
-            console.error("Error:", err);
-            container.innerHTML = `<p style="padding:60px;">File not found: ${xmlUrl}</p>`;
-        });
-    } else {
-        container.innerHTML = '<p style="padding:60px;">No ?file= parameter provided.</p>';
+        loadMusic();
     }
 </script>
-
 </body>
 </html>
