@@ -87,38 +87,7 @@
         <part-group number="3" type="stop"/>
     </part-list>
     <part id="P1">
-        <measure number="1">
-            <attributes>
-                <divisions>2</divisions>
-                <key>
-                    <fifths>-2</fifths>
-                    <mode>minor</mode>
-                </key>
-                <time>
-                    <beats>4</beats>
-                    <beat-type>4</beat-type>
-                </time>
-                <clef>
-                    <sign>G</sign>
-                    <line>2</line>
-                </clef>
-            </attributes>
-            <note>
-                <rest/>
-                <duration>8</duration>
-                <voice>1</voice>
-                <staff>1</staff>
-            </note>
-        </measure>
-        <measure number="2">
-            <note>
-                <rest/>
-                <duration>8</duration>
-                <voice>1</voice>
-                <staff>1</staff>
-            </note>
-        </measure>
-        <measure number="3" width="556">
+        <measure number="1" width="556">
             <print page-number="1">
                 <system-layout>
                     <system-margins>
@@ -222,7 +191,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="4" width="381">
+        <measure number="2" width="381">
             <print new-system="no"/>
             <note>
                 <pitch>
@@ -299,7 +268,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="5" width="564">
+        <measure number="3" width="564">
             <print new-system="yes">
                 <system-layout>
                     <system-margins>
@@ -385,7 +354,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="6" width="373">
+        <measure number="4" width="373">
             <print new-system="no"/>
             <note>
                 <pitch>
@@ -464,7 +433,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="7" width="522">
+        <measure number="5" width="522">
             <print new-system="yes">
                 <system-layout>
                     <system-margins>
@@ -551,7 +520,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="8" width="414">
+        <measure number="6" width="414">
             <print new-system="no"/>
             <note>
                 <pitch>
@@ -628,7 +597,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="9" width="511">
+        <measure number="7" width="511">
             <print new-system="yes">
                 <system-layout>
                     <system-margins>
@@ -714,7 +683,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="10" width="425">
+        <measure number="8" width="425">
             <print new-system="no"/>
             <note>
                 <pitch>
@@ -826,23 +795,7 @@
                 <staff>1</staff>
             </note>
         </measure>
-        <measure number="3">
-            <note>
-                <rest/>
-                <duration>4</duration>
-                <voice>1</voice>
-                <staff>1</staff>
-            </note>
-        </measure>
-        <measure number="4">
-            <note>
-                <rest/>
-                <duration>4</duration>
-                <voice>1</voice>
-                <staff>1</staff>
-            </note>
-        </measure>
-        <measure number="5" width="564">
+        <measure number="3" width="564">
             <print new-system="no"/>
             <attributes>
                 <divisions>1</divisions>
@@ -882,7 +835,7 @@
                 <staff>1</staff>
             </note>
         </measure>
-        <measure number="6" width="373">
+        <measure number="4" width="373">
             <print new-system="no"/>
             <note>
                 <rest/>
@@ -892,7 +845,7 @@
                 <staff>1</staff>
             </note>
         </measure>
-        <measure number="7" width="522">
+        <measure number="5" width="522">
             <print new-system="no"/>
             <attributes>
                 <divisions>2</divisions>
@@ -981,7 +934,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="8" width="414">
+        <measure number="6" width="414">
             <print new-system="no"/>
             <note>
                 <pitch>
@@ -1059,7 +1012,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="9" width="511">
+        <measure number="7" width="511">
             <print new-system="no"/>
             <attributes>
                 <divisions>1</divisions>
@@ -1087,7 +1040,7 @@
                 <staff>1</staff>
             </note>
         </measure>
-        <measure number="10" width="425">
+        <measure number="8" width="425">
             <print new-system="no"/>
             <attributes>
                 <divisions>2</divisions>
@@ -1154,38 +1107,7 @@
         </measure>
     </part>
     <part id="P3">
-        <measure number="1">
-            <attributes>
-                <divisions>2</divisions>
-                <key>
-                    <fifths>-2</fifths>
-                    <mode>minor</mode>
-                </key>
-                <time>
-                    <beats>4</beats>
-                    <beat-type>4</beat-type>
-                </time>
-                <clef>
-                    <sign>G</sign>
-                    <line>2</line>
-                </clef>
-            </attributes>
-            <note>
-                <rest/>
-                <duration>8</duration>
-                <voice>1</voice>
-                <staff>1</staff>
-            </note>
-        </measure>
-        <measure number="2">
-            <note>
-                <rest/>
-                <duration>8</duration>
-                <voice>1</voice>
-                <staff>1</staff>
-            </note>
-        </measure>
-        <measure number="3" width="556">
+        <measure number="1" width="556">
             <print new-page="yes"/>
             <attributes>
                 <divisions>2</divisions>
@@ -1308,7 +1230,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="4" width="381">
+        <measure number="2" width="381">
             <print new-system="no"/>
             <note>
                 <pitch>
@@ -1402,7 +1324,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="5" width="564">
+        <measure number="3" width="564">
             <print new-system="no"/>
             <note>
                 <rest/>
@@ -1449,7 +1371,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="6" width="373">
+        <measure number="4" width="373">
             <print new-system="no"/>
             <note>
                 <pitch>
@@ -1520,7 +1442,7 @@
                 <staff>1</staff>
             </note>
         </measure>
-        <measure number="7" width="522">
+        <measure number="5" width="522">
             <print new-system="no"/>
             <note>
                 <pitch>
@@ -1597,7 +1519,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="8" width="414">
+        <measure number="6" width="414">
             <print new-system="no"/>
             <note>
                 <pitch>
@@ -1665,7 +1587,7 @@
                 <staff>1</staff>
             </note>
         </measure>
-        <measure number="9" width="511">
+        <measure number="7" width="511">
             <print new-system="no"/>
             <note>
                 <pitch>
@@ -1727,7 +1649,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="10" width="425">
+        <measure number="8" width="425">
             <print new-system="no"/>
             <note>
                 <pitch>
