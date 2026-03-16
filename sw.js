@@ -1,4 +1,4 @@
-const CACHE_NAME = 'choir-app-v2'; // Incrementing version to force update
+const CACHE_NAME = 'choir-app-v1'; // Incrementing version to force update
 const ASSETS_TO_CACHE = [
   './index.htm',
   './MuXml.htm',
