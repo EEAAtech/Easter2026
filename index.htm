@@ -248,13 +248,21 @@
             createLinksTable("VOICE 1", "VOICE 2", "VOICE 3", "VOICE 4", "1.m4a", "2.m4a", "3.m4a", "4.m4a");
         }
 
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./Easter2026/sw.js')
-                .then(reg => console.log('Offline support ready.'))
-                .catch(err => console.log('Offline registration failed:', err));
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered successfully.'))
+                    .catch(err => {
+                        console.error('Service Worker registration failed:', err);
+                        // Optionally, you could show a message to the user or perform another action that makes sense for your application when Service Workers fail to register.
+                    });
             });
+        } else {
+            console.log('This browser does not support service workers.');
         }
+
+        
     </script>
 </body>
 </html>
