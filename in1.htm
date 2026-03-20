@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easter Vigil SMC 2026</title>
+    <style>
+        :root {
+            --primary: #c0392b;
+            --secondary: #2980b9;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: #333;
+            margin: 0;
+            padding: 15px;
+            text-align: center;
+        }
+        .header-row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+            margin-top: 1rem;
+        }
+        .header-row svg { height: 60px; width: auto; margin-bottom: 10px; }
+        h1 { color: var(--primary); font-size: 1.8rem; margin: 0; }
+
+        #linksContainer {
+            display: grid;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .hymn-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .hymn-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: block;
+            color: #2c3e50;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            align-items: center;
+        }
+
+        .icon-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            font-size: 0.65rem;
+            color: var(--secondary);
+            transition: opacity 0.2s;
+        }
+        .icon-link:active { opacity: 0.5; }
+        .icon-link .emoji { font-size: 1.4rem; margin-bottom: 2px; }
+        .icon-label { font-weight: 600; color: #64748b; }
+        
+        .footer { margin-top: 40px; font-size: 0.8rem; color: #94a3b8; }
+    </style>
+</head>
+<body>
+
+<div class="header-row">
+    <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="black" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="256" cy="90" r="50"/><circle cx="256" cy="130" r="40"/>
+            <path d="M180 220 Q256 190 332 220 L370 420 Q256 460 142 420 Z"/>
+            <path d="M180 230 Q100 180 80 120"/><path d="M332 230 Q412 180 432 120"/>
+            <circle cx="80" cy="115" r="10"/><circle cx="432" cy="115" r="10"/>
+        </g>
+    </svg>
+    <h1>Easter Vigil SMC 2026</h1>
+</div>
+
+<div id="linksContainer"></div>
+
+<div class="footer">
+    &copy; 2026 Erryl Alvares
+</div>
+
+<script>
+    const links = [
+        { name: "Lord Have Mercy", id: "LHMYouth" },
+        { name: "Gloria", id: "GloryDanS" },
+        { name: "Acc", id: "AccSeekYeDavidsCty" },
+        { name: "Off: AmchimChitnam", id: "AmchimChitnam" },
+        { name: "Holy", id: "HolyOfIpshita" },
+        { name: "Comm: ", id: "JezuMhojea" },
+        { name: "PComm: ", id: "" },
+        { name: "Rec: ", id: "" }
+    ].filter(link => link.id !== ""); // Only render if ID exists
+
+    async function fileExists(url) {
+        // file:// protocol doesn't support FETCH/HEAD requests in most browsers
+        if (window.location.protocol === 'file:') return true; 
+        try {
+            const response = await fetch(url, { method: 'HEAD' });
+            return response.ok;
+        } catch { return false; }
+    }
+
+    async function renderApp() {
+        const container = document.getElementById('linksContainer');
+        
+        for (const hymn of links) {
+            const card = document.createElement('div');
+            card.className = 'hymn-card';
+            
+            let html = `<span class="hymn-title">${hymn.name || hymn.id}</span><div class="icon-grid">`;
+            
+            const fileSpecs = [
+                { label: 'Sheet', url: `${hymn.id}/${hymn.id}Sheet.pdf`, icon: '📄' },
+                { label: 'MuXml', url: `MuXml.htm?file=${hymn.id}`, icon: '🎼' },
+                { label: '1.m4a', url: `${hymn.id}/1.m4a`, icon: '🎧' },
+                { label: '2.m4a', url: `${hymn.id}/2.m4a`, icon: '🎧' },
+                { label: '3.m4a', url: `${hymn.id}/3.m4a`, icon: '🎧' },
+                { label: '4.m4a', url: `${hymn.id}/4.m4a`, icon: '🎧' },
+                { label: '1.mp3', url: `${hymn.id}/V1.mp3`, icon: '🎵' },
+                { label: '2.mp3', url: `${hymn.id}/V2.mp3`, icon: '🎵' },
+                { label: '3.mp3', url: `${hymn.id}/V3.mp3`, icon: '🎵' },
+                { label: '4.mp3', url: `${hymn.id}/V4.mp3`, icon: '🎵' }
+            ];
+
+            for (const spec of fileSpecs) {
+                const exists = await fileExists(spec.url);
+                if (exists) {
+                    html += `
+                        <a href="${spec.url}" class="icon-link">
+                            <span class="emoji">${spec.icon}</span>
+                            <span class="icon-label">${spec.label}</span>
+                        </a>`;
+                }
+            }
+            
+            html += `</div>`;
+            card.innerHTML = html;
+            container.appendChild(card);
+        }
+    }
+
+    // --- SERVICE WORKER & CACHE LOGIC ---
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Service Worker registered successfully.'))
+                .catch(err => console.error('Service Worker registration failed:', err));
+        });
+    }
+
+    async function listCacheNames() {
+        const cacheNames = await caches.keys();
+        console.log('Available caches:', cacheNames);
+    }
+
+    async function listUrlsInCache(cacheName) {
+        try {
+            const cache = await caches.open(cacheName);
+            const requests = await cache.keys();
+            const urls = requests.map(request => request.url);
+            console.log(`URLs in cache "${cacheName}":`, urls);
+        } catch (e) {
+            console.log(`Cache "${cacheName}" not found yet.`);
+        }
+    }
+
+    // Initialize
+    renderApp();
+    listCacheNames();
+    listUrlsInCache('choir-app-v1');
+
+</script>
+</body>
+</html>
