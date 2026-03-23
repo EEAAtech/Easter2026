@@ -1,11 +1,11 @@
-const CACHE_NAME = 'choir-app-v3'; // Incrementing version to force update
+const CACHE_NAME = 'choir-app-v4'; // Incremented version
 const ASSETS_TO_CACHE = [
   './index.htm',
   './MuXml.htm',
   './Lyrics.htm'
 ];
 
-// Install Event: Cache the application shells
+// Install Event
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -15,21 +15,24 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Fetch Event: The "Traffic Controller"
+// Fetch Event
 self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
-
   event.respondWith(
     caches.match(event.request, { ignoreSearch: true }).then((response) => {
-      // 1. If it's a core HTML file (like MuXml.htm?file=...), return it from cache
+      // 1. Return from cache if available
       if (response) {
         return response;
       }
 
-      // 2. If not in cache, try the network
+      // 2. Network fetch and dynamic caching for music/data files
       return fetch(event.request).then((networkResponse) => {
-        // Optional: Cache music files (.xml, .txt) on-the-fly as they are downloaded
-        if (event.request.url.includes('.xml') || event.request.url.includes('.txt')) {
+        const url = event.request.url;
+        const cacheableExtensions = ['.xml', '.txt', '.pdf', '.mp3', '.m4a'];
+        
+        const shouldCache = cacheableExtensions.some(ext => url.toLowerCase().endsWith(ext)) || 
+                           url.includes('.xml') || url.includes('.txt');
+
+        if (shouldCache && networkResponse.ok) {
           const responseClone = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseClone);
@@ -37,14 +40,13 @@ self.addEventListener('fetch', (event) => {
         }
         return networkResponse;
       }).catch(() => {
-        // 3. Fallback: If network fails and it's not in cache, we are truly offline
-        console.log('Resource not available offline:', event.request.url);
+        // Offline and not in cache
       });
     })
   );
 });
 
-// Activate Event: Clean up old versions
+// Activate Event
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {

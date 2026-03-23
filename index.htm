@@ -58,9 +58,10 @@
 
         .icon-grid {
             display: grid;
-            grid-template-columns: repeat(8, 1fr); /*  Change 8to 10 when 4th voice added */
-            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 8px;
             align-items: center;
+            min-height: 40px;
         }
 
         .icon-link {
@@ -70,13 +71,15 @@
             text-decoration: none;
             font-size: 0.65rem;
             color: var(--secondary);
-            transition: opacity 0.2s;
+            transition: transform 0.1s;
         }
-        .icon-link:active { opacity: 0.5; }
+        .icon-link:active { transform: scale(0.9); }
         .icon-link .emoji { font-size: 1.4rem; margin-bottom: 2px; }
-        .icon-label { font-weight: 600; color: #64748b; }
         
         .footer { margin-top: 40px; font-size: 0.8rem; color: #94a3b8; }
+        
+        /* Loading state for icons being checked in background */
+        .checking { opacity: 0.3; filter: grayscale(1); }
     </style>
 </head>
 <body>
@@ -100,9 +103,12 @@
 </div>
 
 <script>
+    const STORAGE_KEY = 'choir_known_files_v1';
+    
+    // Load known files from localStorage
+    let knownFiles = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+
     const links = [
-        { name: "Psalm: ", id: "" },    
-        { name: "Spr. of H. Water: ", id: "" },    
         { name: "Lord Have Mercy", id: "LHMYouth" },
         { name: "Gloria", id: "GloryDanS" },
         { name: "Acclamation", id: "AccSeekYeDavidsCty" },
@@ -111,25 +117,38 @@
         { name: "Comm: Jezu Mhojea", id: "JezuMhojea" },
         { name: "PComm: ", id: "" },
         { name: "Rec: ", id: "" }
-    ].filter(link => link.id !== ""); // Only render if ID exists
+    ].filter(link => link.id !== "");
 
     async function fileExists(url) {
-        // file:// protocol doesn't support FETCH/HEAD requests in most browsers
         if (window.location.protocol === 'file:') return true; 
         try {
-            const response = await fetch(url, { method: 'HEAD' });
+            // Using a timeout to prevent hanging on slow networks
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000);
+            
+            const response = await fetch(url, { 
+                method: 'HEAD',
+                signal: controller.signal 
+            });
+            clearTimeout(timeoutId);
             return response.ok;
         } catch { return false; }
     }
 
+    function saveKnownFile(url) {
+        if (!knownFiles.includes(url)) {
+            knownFiles.push(url);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(knownFiles));
+        }
+    }
+
     async function renderApp() {
         const container = document.getElementById('linksContainer');
+        container.innerHTML = ''; // Clear for re-renders
         
         for (const hymn of links) {
             const card = document.createElement('div');
             card.className = 'hymn-card';
-            
-            let html = `<span class="hymn-title">${hymn.name || hymn.id}</span><div class="icon-grid">`;
             
             const fileSpecs = [
                 { label: 'Sheet', url: `${hymn.id}/${hymn.id}Sheet.pdf`, icon: '📄' },
@@ -144,53 +163,59 @@
                 { label: '4.mp3', url: `${hymn.id}/${hymn.id}V4.mp3`, icon: '4🗣️' }
             ];
 
-            for (const spec of fileSpecs) {
-                const exists = await fileExists(spec.url);
-                if (exists) {
+            let html = `<span class="hymn-title">${hymn.name || hymn.id}</span><div class="icon-grid" id="grid-${hymn.id}">`;
+            
+            // Immediate Render: Only show what we already know exists
+            fileSpecs.forEach(spec => {
+                if (knownFiles.includes(spec.url)) {
                     html += `
-                        <a href="${spec.url}" class="icon-link">
+                        <a href="${spec.url}" class="icon-link" title="${spec.label}">
                             <span class="emoji">${spec.icon}</span>
-                            
                         </a>`;
                 }
-            }
-            
+            });
+
             html += `</div>`;
             card.innerHTML = html;
             container.appendChild(card);
+
+            // Background Check: Check for the rest after the UI is visible
+            processBackgroundChecks(hymn.id, fileSpecs);
         }
     }
 
-    // --- SERVICE WORKER & CACHE LOGIC ---
+    async function processBackgroundChecks(hymnId, specs) {
+        const grid = document.getElementById(`grid-${hymnId}`);
+        
+        for (const spec of specs) {
+            // If we already know it exists, don't ping the server again
+            if (knownFiles.includes(spec.url)) continue;
+
+            const exists = await fileExists(spec.url);
+            if (exists) {
+                saveKnownFile(spec.url);
+                
+                // Add icon to UI dynamically
+                const a = document.createElement('a');
+                a.href = spec.url;
+                a.className = 'icon-link';
+                a.innerHTML = `<span class="emoji">${spec.icon}</span>`;
+                grid.appendChild(a);
+            }
+        }
+    }
+
+    // Service Worker Registration
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('Service Worker registered successfully.'))
-                .catch(err => console.error('Service Worker registration failed:', err));
+                .then(reg => console.log('SW Registered'))
+                .catch(err => console.log('SW Failed', err));
         });
     }
 
-    async function listCacheNames() {
-        const cacheNames = await caches.keys();
-        console.log('Available caches:', cacheNames);
-    }
-
-    async function listUrlsInCache(cacheName) {
-        try {
-            const cache = await caches.open(cacheName);
-            const requests = await cache.keys();
-            const urls = requests.map(request => request.url);
-            console.log(`URLs in cache "${cacheName}":`, urls);
-        } catch (e) {
-            console.log(`Cache "${cacheName}" not found yet.`);
-        }
-    }
-
-    // Initialize
+    // Initial Start
     renderApp();
-    listCacheNames();
-    listUrlsInCache('choir-app-v3');
-
 </script>
 </body>
 </html>
