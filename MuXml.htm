@@ -67,12 +67,15 @@
     <div id="score-container"></div>
     <div id="toast"></div>
 
+
+
 <script>
     let osmd;
     let currentZoom = 0.8;
     let isPlaying = false;
     let playbackTimeout;
     let detectedBPM = 120;
+    const APP_CACHE_NAME = 'choir-app-v8';
 
     function showToast(msg) {
         const t = document.getElementById('toast');
@@ -161,18 +164,13 @@
 
     async function refreshMusic() {
         if (!confirm("Refresh Sheet?")) return;
-        
+
         try {
-            // 1. Clear LocalStorage
-            localStorage.removeItem(xmlPath);
-            
-            // 2. Clear from Service Worker Cache
             if ('caches' in window) {
-                const cache = await caches.open('choir-app-v8');
+                const cache = await caches.open(APP_CACHE_NAME);
                 await cache.delete(xmlPath);
             }
-            
-            // 3. Reload
+
             loadMusic(true);
             showToast("Sheet Updated!");
         } catch (e) {
@@ -182,11 +180,11 @@
 
     function loadMusic(forceRefresh = false) {
         if (!xmlPath) return;
-        const cachedXML = localStorage.getItem(xmlPath);
-        
+
         const processData = (data) => {
             detectedBPM = extractTempo(data);
-            document.getElementById('tempo-val').innerText = detectedBPM; // Removed "BPM:"
+            document.getElementById('tempo-val').innerText = detectedBPM;
+
             osmd.load(data).then(() => {
                 osmd.zoom = currentZoom;
                 osmd.render();
@@ -194,19 +192,13 @@
             });
         };
 
-        if (cachedXML && !forceRefresh) {
-            processData(cachedXML);
-        } else {
-            // Append timestamp to bypass potential ISP/Browser level caching
-            fetch(xmlPath + '?nocache=' + Date.now())
-                .then(r => r.text())
-                .then(data => {
-                    localStorage.setItem(xmlPath, data);
-                    processData(data);
-                })
-                .catch(() => showToast("Offline: Cannot sync."));
-        }
+        // Always fetch → Service Worker decides cache vs network
+        fetch(xmlPath + (forceRefresh ? '?nocache=' + Date.now() : ''))
+            .then(r => r.text())
+            .then(data => processData(data))
+            .catch(() => showToast("Offline: Cannot load sheet."));
     }
+
     function changeZoom(delta) { if (!osmd) return; currentZoom = Math.max(0.3, Math.min(3.0, currentZoom + delta)); osmd.zoom = currentZoom; osmd.render(); osmd.cursor.show(); }
 
     if (fileName) {

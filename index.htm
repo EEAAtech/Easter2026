@@ -102,8 +102,10 @@
     &copy; 2026 Erryl Alvares
 </div>
 
+
 <script>
-    const STORAGE_KEY = 'choir-app-v8';
+    const APP_CACHE_NAME = 'choir-app-v8';
+    const STORAGE_KEY = APP_CACHE_NAME;
     
     // Load known files from localStorage
     let knownFiles = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
