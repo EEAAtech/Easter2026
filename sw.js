@@ -1,4 +1,4 @@
-const CACHE_NAME = 'choir-app-v8'; // Incremented version
+const CACHE_NAME = 'choir-app-v9'; // Incremented version
 const CORE_ASSETS = [
   './',
   './index.htm',
