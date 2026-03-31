@@ -77,7 +77,7 @@
                     <line>2</line>
                 </clef>
             </attributes>
-            <sound tempo="113"/>
+            <sound tempo="114"/>
             <note>
                 <pitch>
                     <step>F</step>
@@ -1011,7 +1011,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="30" width="197">
+        <measure number="30" width="199">
             <print new-system="yes">
                 <system-layout>
                     <system-margins>
@@ -1065,7 +1065,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="31" width="111">
+        <measure number="31" width="113">
             <print new-system="no"/>
             <note>
                 <pitch>
@@ -1096,7 +1096,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="32" width="105">
+        <measure number="32" width="106">
             <print new-system="no"/>
             <note>
                 <pitch>
@@ -1120,37 +1120,27 @@
                 <staff>1</staff>
             </note>
         </measure>
-        <measure number="33" width="64">
+        <measure number="33" width="58">
             <print new-system="no"/>
             <note>
-                <pitch>
-                    <step>E</step>
-                    <octave>4</octave>
-                </pitch>
+                <rest/>
                 <duration>3</duration>
                 <voice>1</voice>
-                <type>half</type>
-                <dot/>
-                <stem>up</stem>
+                <type>whole</type>
                 <staff>1</staff>
             </note>
         </measure>
-        <measure number="34" width="65">
+        <measure number="34" width="59">
             <print new-system="no"/>
             <note>
-                <pitch>
-                    <step>F</step>
-                    <octave>4</octave>
-                </pitch>
+                <rest/>
                 <duration>3</duration>
                 <voice>1</voice>
-                <type>half</type>
-                <dot/>
-                <stem>up</stem>
+                <type>whole</type>
                 <staff>1</staff>
             </note>
         </measure>
-        <measure number="35" width="189">
+        <measure number="35" width="191">
             <print new-system="no"/>
             <note>
                 <pitch>
@@ -1195,7 +1185,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="36" width="99">
+        <measure number="36" width="101">
             <print new-system="no"/>
             <note>
                 <pitch>
@@ -1226,7 +1216,7 @@
                 </lyric>
             </note>
         </measure>
-        <measure number="37" width="104">
+        <measure number="37" width="106">
             <print new-system="no"/>
             <note>
                 <pitch>
