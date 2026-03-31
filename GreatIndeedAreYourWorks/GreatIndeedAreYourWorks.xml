@@ -107,6 +107,7 @@
           <line>2</line>
         </clef>
       </attributes>
+      <sound tempo="107"/>
       <note>
         <rest />
         <duration>10080</duration>
