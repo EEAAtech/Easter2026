@@ -48,7 +48,7 @@ self.addEventListener('fetch', (event) => {
 
       // Strategy 3: Network-First for everything else
       return fetch(event.request).then((networkResponse) => {
-        const cacheableExtensions = ['.txt', '.pdf', '.mp3', '.m4a'];
+        const cacheableExtensions = ['.xml', '.txt', '.pdf', '.mp3', '.m4a'];
         const shouldCache = cacheableExtensions.some(ext => url.pathname.toLowerCase().endsWith(ext));
 
         if (shouldCache && networkResponse.ok) {
