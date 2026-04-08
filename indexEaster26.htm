@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mass of elevation of SMC</title>
+    <title>Easter Vigil SMC 2026</title>
     <style>
         :root {
             --primary: #c0392b;
@@ -86,37 +86,14 @@
 
 <div class="header-row">
     <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-  <g stroke="black" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round">
-
-    <!-- Front roof -->
-    <path d="M120 240 L256 140 L392 240" />
-    
-    <!-- Side roof (depth) -->
-    <path d="M256 140 L310 170 L446 270" />
-    <path d="M392 240 L446 270" />
-    
-    <!-- Front wall -->
-    <rect x="160" y="240" width="192" height="160" />
-    
-    <!-- Side wall -->
-    <path d="M352 240 L406 270 L406 430 L352 400 Z" />
-    
-    <!-- Door -->
-    <path d="M236 400 L236 320 Q256 300 276 320 L276 400" />
-    
-    <!-- Steeple front -->
-    <rect x="226" y="170" width="60" height="70" />
-    
-    <!-- Steeple side -->
-    <path d="M286 170 L330 195 L330 265 L286 240 Z" />
-    
-    <!-- Cross -->
-    <path d="M256 110 L256 150" />
-    <path d="M238 130 L274 130" />
-
-  </g>
-</svg>
-    <h1>Elevation Mass of SMC</h1>
+        <g stroke="black" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="256" cy="90" r="50"/><circle cx="256" cy="130" r="40"/>
+            <path d="M180 220 Q256 190 332 220 L370 420 Q256 460 142 420 Z"/>
+            <path d="M180 230 Q100 180 80 120"/><path d="M332 230 Q412 180 432 120"/>
+            <circle cx="80" cy="115" r="10"/><circle cx="432" cy="115" r="10"/>
+        </g>
+    </svg>
+    <h1>Easter Vigil SMC 2026</h1>
 </div>
 
 <div id="linksContainer"></div>
@@ -127,30 +104,24 @@
 
 
 <script>
-    const APP_CACHE_NAME = 'smc-choir-v1';
+    const APP_CACHE_NAME = 'choir-app-v10';
     const STORAGE_KEY = APP_CACHE_NAME;
     
     // Load known files from localStorage
     let knownFiles = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 
     const links = [
-        { name: "Mogal Guru", id: "tbd" },
-        { name: "Ent: Povitr Amchi sobha", id: "PovitrSobha" },
-        { name: "Lord Have Mercy", id: "LHMYouth" },
-        { name: "Gloria", id: "tbd" },
-        { name: "Psalm", id: "tbd" },
+        { name: "Psalm: Great Indeed Are Your Works", id: "GreatIndeedAreYourWorks" },
+        { name: "Gloria", id: "GloryDanS" },
         { name: "Acclamation", id: "AccSeekYeDavidsCty" },
-        { name: "Thanksgiving: Great Indeed", id: "GreatIndeedAreYourWorks" },
-        { name: "POF", id: "tbd" },
+        { name: "H.W. Sprink: Devmondirantlem", id: "Devmondirantlem" },
         { name: "Offertory: Amchim Chitnam", id: "AmchimChitnam" },
         { name: "Holy", id: "HolyOfIpshita" },
-        { name: "Proclamation", id: "tbd" },
-        { name: "Great Amen", id: "Amen" },
-        { name: "Amche Bappa", id: "tbd" },
-        { name: "Lamb Of God", id: "tbd" },
+        { name: "Proclamation", id: "WhenWeEatYtM" },
+        { name: "Lamb Of God", id: "DevaXellieLitTown" },
         { name: "Comm: Jezu Mhojea", id: "JezuMhojea" },
-        { name: "Res: Doriache Tara", id: "tbd" },
-        { name: "Signing: hymns to Our Lady", id: "tbd" }
+        { name: "PComm: Thank You Lord", id: "ThanYouSavSoul" },
+        { name: "Rec: Regina Caeli Laetare", id: "ReginaCaeliLaetare" }
     ].filter(link => link.id !== "");
 
     async function fileExists(url) {
