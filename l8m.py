@@ -58,7 +58,8 @@ def apply_multi_voice_lyrics(score, voice_lyrics_list):
         if part_idx < len(score.parts):
             tokens = hyphenated_text.split()
             part = score.parts[part_idx]
-            notes = [n for n in part.flatten().notes if n.isNote]
+            # Filter for notes that are NOT the continuation or end of a tie
+            notes = [n for n in part.flatten().notes if n.isNote and (n.tie is None or n.tie.type == 'start')]
             
             # Clear existing lyrics for this part first to avoid overlaps
             for n in notes:
@@ -165,9 +166,9 @@ if st.session_state.score:
     with col1:
         refresh_btn = st.button("🔄 Preview Alignment", use_container_width=True)
     with col2:
-        extract_btn = st.button("📥 Extract Lyrics from Score", use_container_width=True)
-    with col3:
         apply_btn = st.button("💾 Apply Edits to Score", use_container_width=True, type="primary")
+    with col3:
+        extract_btn = st.button("📥 Extract Lyrics from Score", use_container_width=True)
 
     # Logic: Extract Lyrics from Score
     if extract_btn:
@@ -220,21 +221,36 @@ if st.session_state.score:
             osmd.load(`{xml_str_escaped}`).then(() => {{
                 osmd.Zoom = 0.7;
                 osmd.render();
+
+                window.osmdRendered = true;
             }});
 
             // Function to trigger PDF conversion of the rendered container
             function downloadPDF() {{
                 const element = document.getElementById('pdf-wrapper');
-                const opt = {{
-                    margin:       0.3,
-                    filename:     '{js_filename}',
-                    image:        {{ type: 'jpeg', quality: 0.98 }},
-                    html2canvas:  {{ scale: 1, useCORS: true, scrollX: 0, scrollY: 0, windowWidth: document.getElementById('pdf-wrapper').scrollWidth }},
-                    jsPDF:        {{ unit: 'mm', format: 'a4', orientation: 'portrait' }},
-                    pagebreak:    {{ mode: ['avoid-all', 'css', 'legacy'] }}
-                }};                
-                html2pdf().from(element).set(opt).save();
-            }}
+
+
+                const waitForRender = () => {{
+                    if (window.osmdRendered) {{
+                        const opt = {{
+                            margin:       0.3,
+                            filename:     '{js_filename}',
+                            image:        {{ type: 'jpeg', quality: 0.98 }},
+                            html2canvas:  {{ scale: 1, useCORS: true, scrollX: 0, scrollY: 0, windowWidth: document.getElementById('pdf-wrapper').scrollWidth }},
+                            jsPDF:        {{ unit: 'mm', format: 'a4', orientation: 'portrait' }},
+                            pagebreak:    {{ mode: ['avoid-all', 'css', 'legacy'] }}
+                        }};      
+
+                        html2pdf().from(element).set(opt).save();
+                    }} else {{
+                        setTimeout(waitForRender, 200); // retry until ready
+                    }};
+ 
+                
+                }};
+            
+                waitForRender();
+            }};
             
             // Expose function globally if needed
             window.downloadPDF = downloadPDF;
