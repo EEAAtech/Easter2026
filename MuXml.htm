@@ -77,7 +77,7 @@
     let isPlaying = false;
     let playbackTimeout;
     let detectedBPM = 120;
-    const APP_CACHE_NAME = 'smc-choir-v1';
+    const APP_CACHE_NAME = 'smc-choir-v2';
 
     function showToast(msg) {
         const t = document.getElementById('toast');
@@ -170,12 +170,17 @@
         try {
             if ('caches' in window) {
                 const cache = await caches.open(APP_CACHE_NAME);
-                await cache.delete(xmlPath);
+                // Construct the absolute URL to match the key stored by the Service Worker
+                const absoluteApiUrl = new URL(xmlPath, window.location.origin).href;
+                await cache.delete(absoluteApiUrl);
+                // Also delete the version with the query param if it exists
+                await cache.delete(xmlPath); 
             }
 
             loadMusic(true);
             showToast("Sheet Updated!");
         } catch (e) {
+            console.error(e);
             showToast("Refresh Failed");
         }
     }

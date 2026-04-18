@@ -1,6 +1,5 @@
-const CACHE_NAME = 'smc-choir-v1'; // Incremented version
+const CACHE_NAME = 'smc-choir-v2'; // Incremented version
 const CORE_ASSETS = [
-  './',
   './index.htm',
   './MuXml.htm',
   './Lyrics.htm'
@@ -40,9 +39,11 @@ self.addEventListener('fetch', (event) => {
         return cachedResponse || fetchPromise;
       }
 
-      // Strategy 2: Cache-First for Music Assets (PDFs, MP3s, M4As)
-      // Once these are downloaded, they never change, so we serve from cache always.
-      if (cachedResponse) {
+      // Strategy 2: Cache-First for Music Assets (PDFs, MP3s, M4As, XMLs)
+      // FIX: If 'nocache' is in the URL, skip Strategy 2 and go to network
+      const isRefreshManual = url.searchParams.has('nocache');
+      
+      if (cachedResponse && !isRefreshManual) {
         return cachedResponse;
       }
 
